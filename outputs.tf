@@ -3,7 +3,12 @@ output "storage_bucket" {
   value       = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
 }
 
-output "storage_bucket_distribution" {
-  description = "CloudFront distribution domain name"
-  value       = aws_cloudfront_distribution.storage_bucket_distribution.domain_name
+output "distribution_url" {
+  description = "URL to access the CloudFront distribution"
+  value       = format("http://%s", aws_cloudfront_distribution.storage_bucket_distribution.domain_name)
+}
+
+output "kitty_url" {
+  description = "URL to access the kitty JPEG"
+  value       = format("http://%s/kitty-01.jpeg", aws_cloudfront_distribution.storage_bucket_distribution.domain_name)
 }
