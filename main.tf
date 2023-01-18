@@ -22,7 +22,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "storage_bucket_en
 }
 
 # Upload demo content
-resource "aws_s3_bucket_object" "storage_bucket_demo_content" {
+resource "aws_s3_object" "storage_bucket_demo_content" {
   bucket = aws_s3_bucket.storage_bucket.id
   key    = "kitty-01.jpeg"
   source = "${path.module}/content/kitty-01.jpeg"
