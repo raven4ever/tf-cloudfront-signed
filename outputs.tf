@@ -12,3 +12,7 @@ output "kitty_url" {
   description = "URL to access the kitty JPEG"
   value       = local.kitty_https_url
 }
+
+output "signed_kitty_url" {
+  value = data.external.name.result
+}
