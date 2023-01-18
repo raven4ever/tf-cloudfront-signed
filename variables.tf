@@ -1,7 +1,7 @@
 variable "s3_bucket_name" {
   description = "Name of the bucket where the content is stored"
   type        = string
-  default     = "content-bucket"
+  default     = "000-super-important-content-999"
 }
 
 variable "tags" {
