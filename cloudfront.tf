@@ -5,19 +5,19 @@ resource "tls_private_key" "signer_keypair" {
 
 # Create CloudFront signer key
 resource "aws_cloudfront_public_key" "storage_bucket_signers_key" {
-  name        = "cloudfront-signers"
+  name        = format("%s-signers-key", var.s3_bucket_name)
   encoded_key = tls_private_key.signer_keypair.public_key_pem
 }
 
 resource "aws_cloudfront_key_group" "storage_bucket_signers_keygroup" {
-  name  = "cloudfront-signers-key-group"
+  name  = format("%s-key-group", var.s3_bucket_name)
   items = [aws_cloudfront_public_key.storage_bucket_signers_key.id]
 }
 
 # Create CloudFront OAC
 resource "aws_cloudfront_origin_access_control" "storage_bucket_oac" {
-  name                              = var.s3_bucket_name
-  description                       = "OAC for storage bucket"
+  name                              = format("%s-oac", var.s3_bucket_name)
+  description                       = format("OAC for %s bucket.", var.s3_bucket_name)
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -30,7 +30,7 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   tags                = var.tags
 
   origin {
-    origin_id                = var.s3_bucket_name
+    origin_id                = format("%s-origin-id", var.s3_bucket_name)
     domain_name              = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.storage_bucket_oac.id
   }
