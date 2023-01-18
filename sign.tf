@@ -1,8 +1,8 @@
 # Save private key
-resource "local_file" "pem_file" {
-  filename          = "${path.module}/test.pem"
-  file_permission   = "600"
-  sensitive_content = tls_private_key.signer_keypair.private_key_pem
+resource "local_sensitive_file" "private_key_file" {
+  content         = tls_private_key.signer_keypair.private_key_pem
+  filename        = "${path.module}/test.pem"
+  file_permission = "600"
 }
 
 # Generate the signed URL
