@@ -41,6 +41,7 @@ resource "aws_cloudfront_origin_access_control" "storage_bucket_distribution_oac
 # Create CloudFront distribution
 resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   enabled = true
+  tags    = var.tags
 
   origin {
     domain_name              = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
@@ -49,6 +50,20 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   }
 
   default_cache_behavior {
-    target_origin_id = var.bucket_name
+    target_origin_id       = var.bucket_name
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+      locations        = []
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
   }
 }
