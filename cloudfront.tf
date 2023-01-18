@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   }
 
   default_cache_behavior {
-    target_origin_id       = var.s3_bucket_name
+    target_origin_id       = format("%s-origin-id", var.s3_bucket_name)
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
