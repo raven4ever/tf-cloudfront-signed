@@ -45,7 +45,7 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
     trusted_key_groups = [aws_cloudfront_key_group.storage_bucket_signers_keygroup.id]
 
     forwarded_values {
-      query_string = true
+      query_string = false
       cookies {
         forward = "none"
       }
