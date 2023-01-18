@@ -12,4 +12,4 @@ SIGNED_URL=$(aws cloudfront sign \
     --private-key $PK \
     --date-less-than $ED)
 
-jq -n --arg url "$SIGNED_URL"
+jq -n --arg url "$SIGNED_URL" '{"url":$url}'
