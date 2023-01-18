@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "storage_bucket_policy_document" {
     actions   = ["s3:GetObject"]
     principals {
       type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.storage_bucket_oai.cloudfront_access_identity_path]
+      identifiers = [aws_cloudfront_origin_access_identity.storage_bucket_oai.iam_arn]
     }
   }
 }
