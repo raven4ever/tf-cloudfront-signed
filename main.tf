@@ -1,7 +1,7 @@
 # Create storage bucket
 resource "aws_s3_bucket" "storage_bucket" {
-  name = var.bucket_name
-  tags = var.tags
+  bucket = var.bucket_name
+  tags   = var.tags
 }
 
 # Make the bucket private
