@@ -28,3 +28,27 @@ resource "aws_s3_object" "storage_bucket_demo_content" {
   source = "${path.module}/content/kitty-01.jpeg"
   etag   = filemd5("${path.module}/content/kitty-01.jpeg")
 }
+
+# Create CloudFront orgin access control
+resource "aws_cloudfront_origin_access_control" "storage_bucket_distribution_oac" {
+  name                              = "storage-bucket-distribution-oac"
+  description                       = "Allow distribution from storage_bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+# Create CloudFront distribution
+resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
+  enabled = true
+
+  origin {
+    domain_name              = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.storage_bucket_distribution_oac.id
+    origin_id                = var.bucket_name
+  }
+
+  default_cache_behavior {
+    target_origin_id = var.bucket_name
+  }
+}
