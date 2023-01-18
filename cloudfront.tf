@@ -1,40 +1,3 @@
-# Create storage bucket
-resource "aws_s3_bucket" "storage_bucket" {
-  bucket = var.bucket_name
-  tags   = var.tags
-}
-
-# Make the bucket private
-resource "aws_s3_bucket_acl" "storage_bucket_acl" {
-  bucket = aws_s3_bucket.storage_bucket.id
-  acl    = "private"
-}
-
-# Enable encryption by default
-resource "aws_s3_bucket_server_side_encryption_configuration" "storage_bucket_encryption" {
-  bucket = aws_s3_bucket.storage_bucket.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
-# Upload demo content
-resource "aws_s3_object" "storage_bucket_demo_content" {
-  bucket = aws_s3_bucket.storage_bucket.id
-  key    = "kitty-01.jpeg"
-  source = "${path.module}/content/kitty-01.jpeg"
-  etag   = filemd5("${path.module}/content/kitty-01.jpeg")
-}
-
-# Attach bucket policy
-resource "aws_s3_bucket_policy" "storage_bucket_policy" {
-  bucket = aws_s3_bucket.storage_bucket.id
-  policy = data.aws_iam_policy_document.storage_bucket_policy_document.json
-}
-
 # Create CloudFront OAI
 resource "aws_cloudfront_origin_access_identity" "storage_bucket_oai" {
   comment = "OAI to access storage bucket"
@@ -42,8 +5,9 @@ resource "aws_cloudfront_origin_access_identity" "storage_bucket_oai" {
 
 # Create CloudFront distribution
 resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
-  enabled = true
-  tags    = var.tags
+  enabled             = true
+  default_root_object = "index.html"
+  tags                = var.tags
 
   origin {
     domain_name = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
@@ -65,6 +29,11 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
         forward = "none"
       }
     }
+  }
+
+  custom_error_response {
+    error_code         = 404
+    response_page_path = "404.html"
   }
 
   restrictions {
