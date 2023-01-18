@@ -5,10 +5,10 @@ output "storage_bucket" {
 
 output "distribution_url" {
   description = "URL to access the CloudFront distribution"
-  value       = format("http://%s", aws_cloudfront_distribution.storage_bucket_distribution.domain_name)
+  value       = local.distribution_https_url
 }
 
 output "kitty_url" {
   description = "URL to access the kitty JPEG"
-  value       = format("https://%s/kitty-01.jpeg", aws_cloudfront_distribution.storage_bucket_distribution.domain_name)
+  value       = local.kitty_https_url
 }
