@@ -1,3 +1,19 @@
+# Generate a PUB/PRIV pair to sign requests
+resource "tls_private_key" "signer_keypair" {
+  algorithm = "RSA"
+}
+
+# Create CloudFront signer key
+resource "aws_cloudfront_public_key" "storage_bucket_signers_key" {
+  name        = "cloudfront-signers"
+  encoded_key = tls_private_key.signer_keypair.public_key_pem
+}
+
+resource "aws_cloudfront_key_group" "storage_bucket_signers_keygroup" {
+  items = [aws_cloudfront_public_key.storage_bucket_signers_key.id]
+  name  = "cloudfront-signers-key-group"
+}
+
 # Create CloudFront OAC
 resource "aws_cloudfront_origin_access_control" "storage_bucket_oac" {
   name                              = var.bucket_name
@@ -25,6 +41,8 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
+
+    trusted_key_groups = [aws_cloudfront_key_group.storage_bucket_signers_keygroup.id]
 
     forwarded_values {
       query_string = true
