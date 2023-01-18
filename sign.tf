@@ -5,25 +5,13 @@ resource "local_sensitive_file" "private_key_file" {
   file_permission = "600"
 }
 
-# Generate the signed URL
-# resource "null_resource" "sign_url" {
-#   provisioner "local-exec" {
-#     command = format("aws cloudfront sign --url %s --key-pair-id %s --private-key %s --date-less-than %s",
-#       local.kitty_https_url,
-#       aws_cloudfront_public_key.storage_bucket_signers_key.id,
-#       "file://test.pem",
-#       local.url_expiration_date
-#     )
-#   }
-# }
+data "external" "sign_kitty_url" {
+  program = ["sign.sh"]
 
-data "external" "name" {
-  program = [
-    format("aws cloudfront sign --url %s --key-pair-id %s --private-key %s --date-less-than %s",
-      local.kitty_https_url,
-      aws_cloudfront_public_key.storage_bucket_signers_key.id,
-      "file://test.pem",
-      local.url_expiration_date
-    )
-  ]
+  query = {
+    url : local.kitty_https_url
+    key-pair-id : aws_cloudfront_public_key.storage_bucket_signers_key.id
+    private-key : "file://test.pem"
+    end-date : local.url_expiration_date
+  }
 }
