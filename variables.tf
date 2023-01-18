@@ -6,11 +6,13 @@ variable "s3_bucket_name" {
 
 variable "time_for_url_expire" {
   description = "Amount of time to be added from current timestamp until the signed URL will expire"
+  type        = string
   default     = "48h"
 }
 
 variable "date_format" {
   description = "Date format for URL sign process"
+  type        = string
   default     = "DD-MM-YYYY"
 }
 
