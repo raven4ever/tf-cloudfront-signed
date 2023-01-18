@@ -14,5 +14,5 @@ output "kitty_url" {
 }
 
 output "signed_kitty_url" {
-  value = data.external.name.result
+  value = data.external.sign_kitty_url.result
 }

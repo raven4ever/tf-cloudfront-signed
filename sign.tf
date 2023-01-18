@@ -6,7 +6,7 @@ resource "local_sensitive_file" "private_key_file" {
 }
 
 data "external" "sign_kitty_url" {
-  program = ["sign.sh"]
+  program = ["/bin/bash", "sign.sh"]
 
   query = {
     url : local.kitty_https_url
