@@ -1,6 +1,10 @@
-# Create CloudFront OAI
-resource "aws_cloudfront_origin_access_identity" "storage_bucket_oai" {
-  comment = "OAI to access storage bucket"
+# Create CloudFront OAC
+resource "aws_cloudfront_origin_access_control" "storage_bucket_oac" {
+  name                              = var.bucket_name
+  description                       = "OAC for storage bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 # Create CloudFront distribution
@@ -10,11 +14,9 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   tags                = var.tags
 
   origin {
-    domain_name = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
-    origin_id   = var.bucket_name
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.storage_bucket_oai.cloudfront_access_identity_path
-    }
+    origin_id                = var.bucket_name
+    domain_name              = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.storage_bucket_oac.id
   }
 
   default_cache_behavior {
@@ -23,8 +25,7 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
     forwarded_values {
-      query_string = false
-
+      query_string = true
       cookies {
         forward = "none"
       }
