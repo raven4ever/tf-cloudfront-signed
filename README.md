@@ -4,15 +4,13 @@ This project will create a CloudFront distribution to provide content from a S3 
 
 ## Requirements
 
-### Terraform
-
 The minimum Terraform version to run this project is 1.2.
 
-### Others
+The machine where the Terraform plan is going to be executed must have the following:
 
-The machine where the Terraform plan is going to be executed must have the [jq](https://stedolan.github.io/jq/) utility.
-
-The Terraform plan also needs to be executed on a machine with access to `/bin/bash`.
+- [jq utility](https://stedolan.github.io/jq/)
+- [AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- `/bin/bash`
 
 ## Configuration
 
