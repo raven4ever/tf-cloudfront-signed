@@ -34,7 +34,7 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   custom_error_response {
     error_code         = 404
     response_code      = 404
-    response_page_path = "404.html"
+    response_page_path = "/404.html"
   }
 
   restrictions {
