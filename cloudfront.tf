@@ -10,13 +10,13 @@ resource "aws_cloudfront_public_key" "storage_bucket_signers_key" {
 }
 
 resource "aws_cloudfront_key_group" "storage_bucket_signers_keygroup" {
-  items = [aws_cloudfront_public_key.storage_bucket_signers_key.id]
   name  = "cloudfront-signers-key-group"
+  items = [aws_cloudfront_public_key.storage_bucket_signers_key.id]
 }
 
 # Create CloudFront OAC
 resource "aws_cloudfront_origin_access_control" "storage_bucket_oac" {
-  name                              = var.bucket_name
+  name                              = var.s3_bucket_name
   description                       = "OAC for storage bucket"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
@@ -30,13 +30,13 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   tags                = var.tags
 
   origin {
-    origin_id                = var.bucket_name
+    origin_id                = var.s3_bucket_name
     domain_name              = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.storage_bucket_oac.id
   }
 
   default_cache_behavior {
-    target_origin_id       = var.bucket_name
+    target_origin_id       = var.s3_bucket_name
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
