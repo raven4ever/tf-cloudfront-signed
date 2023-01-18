@@ -10,5 +10,5 @@ output "distribution_url" {
 
 output "kitty_url" {
   description = "URL to access the kitty JPEG"
-  value       = format("http://%s/kitty-01.jpeg", aws_cloudfront_distribution.storage_bucket_distribution.domain_name)
+  value       = format("https://%s/kitty-01.jpeg", aws_cloudfront_distribution.storage_bucket_distribution.domain_name)
 }
