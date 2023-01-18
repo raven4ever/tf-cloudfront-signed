@@ -35,13 +35,9 @@ resource "aws_s3_bucket_policy" "storage_bucket_policy" {
   policy = data.aws_iam_policy_document.storage_bucket_policy_document.json
 }
 
-# Create CloudFront orgin access control
-resource "aws_cloudfront_origin_access_control" "storage_bucket_distribution_oac" {
-  name                              = "storage-bucket-distribution-oac"
-  description                       = "Allow distribution from storage_bucket"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
+# Create CloudFront OAI
+resource "aws_cloudfront_origin_access_identity" "storage_bucket_oai" {
+  comment = "OAI to access storage bucket"
 }
 
 # Create CloudFront distribution
@@ -50,9 +46,11 @@ resource "aws_cloudfront_distribution" "storage_bucket_distribution" {
   tags    = var.tags
 
   origin {
-    domain_name              = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.storage_bucket_distribution_oac.id
-    origin_id                = var.bucket_name
+    domain_name = aws_s3_bucket.storage_bucket.bucket_regional_domain_name
+    origin_id   = var.bucket_name
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.storage_bucket_oai.cloudfront_access_identity_path
+    }
   }
 
   default_cache_behavior {
