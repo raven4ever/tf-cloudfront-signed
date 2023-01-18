@@ -9,9 +9,9 @@ data "external" "sign_kitty_url" {
   program = ["/bin/bash", "sign.sh"]
 
   query = {
-    url         = local.kitty_https_url
-    key-pair-id = aws_cloudfront_public_key.storage_bucket_signers_key.id
-    private-key = "file://test.pem"
-    end-date    = local.url_expiration_date
+    url     = local.kitty_https_url
+    kpid    = aws_cloudfront_public_key.storage_bucket_signers_key.id
+    privkey = "file://test.pem"
+    enddate = local.url_expiration_date
   }
 }

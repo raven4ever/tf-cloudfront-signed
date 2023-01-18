@@ -4,7 +4,7 @@
 set -e
 
 # extract input variables
-eval "$(jq -r '@sh "URL=\(.url) KPID=\(.key-pair-id) PK=\(.private-key) ED=\(.end-date)"')"
+eval "$(jq -r '@sh "URL=\(.url) KPID=\(.kpid) PK=\(.privkey) ED=\(.enddate)"')"
 
 SIGNED_URL=$(aws cloudfront sign \
     --url $URL \
