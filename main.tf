@@ -29,6 +29,12 @@ resource "aws_s3_object" "storage_bucket_demo_content" {
   etag   = filemd5("${path.module}/content/kitty-01.jpeg")
 }
 
+# Attach bucket policy
+resource "aws_s3_bucket_policy" "storage_bucket_policy" {
+  bucket = aws_s3_bucket.storage_bucket.id
+  policy = data.aws_iam_policy_document.storage_bucket_policy_document.json
+}
+
 # Create CloudFront orgin access control
 resource "aws_cloudfront_origin_access_control" "storage_bucket_distribution_oac" {
   name                              = "storage-bucket-distribution-oac"
